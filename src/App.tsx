@@ -1,25 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { ReactQueryConfigProvider } from 'react-query';
+
+import useGithubUser from "./useGithubUser";
+import useRepos  from './useRepos';
+
+const queryConfig = { refetchAllOnWindowFocus: false }
 
 function App() {
+  const { data, isFetching } = useGithubUser('ralfting');
+  const { data: dataRepo, isFetching: isFetchingRepo } = useRepos('ralfting')
+
+  if(isFetching || isFetchingRepo) { return <p>loading...</p> };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+    <ReactQueryConfigProvider config={queryConfig}>
+      <div style={{ padding: '10px' }}>
+        <img src={data.avatar_url} alt="avatar" />
+        <p>Login: {data.login}</p>
+        <p>Company: {data.company}</p>
         <p>
-          Edit <code>src/App.tsx</code> and save to reload.
+          Repo Count: {dataRepo.length}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      </div>
+    </ReactQueryConfigProvider>
   );
 }
 
