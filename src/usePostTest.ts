@@ -1,4 +1,4 @@
-import { useMutation } from "react-query";
+import { useMutation, queryCache } from "react-query";
 import axios from "axios";
 
 async function newPost(postItem: any) {
@@ -9,9 +9,10 @@ async function newPost(postItem: any) {
 
 export default function usePostSomething() {
   return useMutation(newPost, {
-    onSuccess: (data, mutationVariables) => {
-      console.log("onSuccess", data, mutationVariables);
-    },
+    onSuccess: data => queryCache.setQueryData(['todo', { id: 5  }], data),
+    //onSuccess: (data, mutationVariables) => {
+      //console.log("onSuccess", data, mutationVariables);
+    //},
     onError: (error, mutationVariables) => {
       console.log('trigger toast', error, mutationVariables);
     },
